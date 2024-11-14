@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "705777611257",
+    "project_id": "designnetapp-88e60",
+    "storage_bucket": "designnetapp-88e60.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705777611257:android:5632a15c03ece0d6908d28",
+        "android_client_info": {
+          "package_name": "com.designnet.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOVVuZX8IKe-jCU9cnZmm4cxWoaB6ytNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
