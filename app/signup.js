@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +23,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Loading state for the button
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -43,17 +45,20 @@ const SignupScreen = () => {
       return;
     }
 
+    setIsLoading(true); // Start loading
+
     try {
       const user = await signup(name, email, mobile, password);
+      setIsLoading(false); // Stop loading after response
       if (user.message === "Firebase: Error (auth/email-already-in-use).") {
         alert("User Already Exist");
         return;
       }
       if (user.uid) {
-        alert("Signup successful!");
         router.push("/dashboard");
       }
     } catch (error) {
+      setIsLoading(false); // Stop loading on error
       alert(error.message);
     }
   };
@@ -71,12 +76,13 @@ const SignupScreen = () => {
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "position"}
-        keyboardVerticalOffset={Platform.OS === "android" ? 30 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjusted for Android
+        keyboardVerticalOffset={Platform.OS === "android" ? 0 : 30}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled" // Ensures tapping outside closes keyboard
         >
           <View style={styles.mainContent}>
             <TouchableOpacity
@@ -143,8 +149,13 @@ const SignupScreen = () => {
               <TouchableOpacity
                 style={styles.signupButton}
                 onPress={handleSignup}
+                disabled={isLoading} // Disable button while loading
               >
-                <Text style={styles.signupButtonText}>Sign up</Text>
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.signupButtonText}>Sign up</Text>
+                )}
               </TouchableOpacity>
 
               <View style={styles.loginTextContainer}>

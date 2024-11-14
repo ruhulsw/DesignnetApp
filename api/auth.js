@@ -5,10 +5,12 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 const db = getFirestore();
 
+// Signup function
 export const signup = async (name, email, mobile, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -42,6 +44,7 @@ export const signup = async (name, email, mobile, password) => {
   }
 };
 
+// Login function
 export const login = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -65,6 +68,7 @@ export const login = async (email, password) => {
   }
 };
 
+// Get current user
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, (user) => {
@@ -78,6 +82,7 @@ export const getCurrentUser = () => {
   });
 };
 
+// Get user from Firestore
 export const getUserFromFirestore = async (userId) => {
   try {
     const userDocRef = doc(db, "users", userId);
@@ -89,7 +94,17 @@ export const getUserFromFirestore = async (userId) => {
       return null;
     }
   } catch (error) {
-    console.log("Error fetching user from Firestore:", error.message);
+    console.log("Error fetching user from Firestore:");
     return null;
+  }
+};
+
+// Reset password function
+export const resetPassword = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return "Password reset email sent!";
+  } catch (error) {
+    return error.message;
   }
 };

@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Loading state for the button
 
   useEffect(() => {
     const checkToken = async () => {
@@ -38,15 +40,19 @@ const LoginScreen = () => {
       alert("Email and Password are required.");
       return;
     }
+
+    setIsLoading(true); // Start loading
+
     try {
       const res = await login(email, password);
+      setIsLoading(false); // Stop loading after response
       if (res.uid) {
-        alert("Login successful!");
         router.push("/dashboard");
       } else if (res === "Firebase: Error (auth/invalid-credential).") {
         alert("Incorrect email or password.");
       }
     } catch (error) {
+      setIsLoading(false); // Stop loading on error
       alert(error.message);
     }
   };
@@ -117,8 +123,13 @@ const LoginScreen = () => {
               <TouchableOpacity
                 style={styles.loginButton}
                 onPress={handleLogin}
+                disabled={isLoading} // Disable button while loading
               >
-                <Text style={styles.loginButtonText}>Login</Text>
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.loginButtonText}>Login</Text>
+                )}
               </TouchableOpacity>
 
               <View style={styles.signupContainer}>
